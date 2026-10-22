@@ -1,0 +1,12 @@
+{
+  "_ghichu": "Giá USD cho 1 TRIỆU token, dùng để ƯỚC TÍNH chi phí nhân viên Codex và chat API. Claude Code tự báo chi phí nên không cần. Điền giá lấy từ trang giá chính thức (anthropic.com/pricing, openai.com/api/pricing). Để null = chưa có giá → chỉ hiện số token. Tên model khớp theo tiền tố (vd 'gpt-6.1' khớp 'gpt-6.1-sol'). usdToVnd: tỉ giá để hiện thêm VNĐ (null = không hiện).",
+  "usdToVnd": null,
+  "models": {
+    "claude-opus-5-5":   { "input": null, "output": null, "cacheRead": null, "cacheWrite": null },
+    "claude-sonnet-5-5": { "input": null, "output": null, "cacheRead": null, "cacheWrite": null },
+    "claude-haiku-5-5":  { "input": null, "output": null, "cacheRead": null, "cacheWrite": null },
+    "gpt-6.1-sol":       { "input": null, "output": null, "cacheRead": null },
+    "gpt-6-astra":       { "input": null, "output": null, "cacheRead": null },
+    "gpt-6-luna":        { "input": null, "output": null, "cacheRead": null }
+  }
+}

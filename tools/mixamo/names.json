@@ -1,0 +1,18 @@
+{
+  "_ghichu": "Tên file FBX trong thư mục in/animations phải là <khoá>.fbx. Cột 'mixamo' là tên để tìm trên mixamo.com (tải Without Skin, 30 fps). walk/run không cần tải: lấy tự động từ nhân vật mẫu X Bot trong bộ ví dụ three.js.",
+  "animations": {
+    "typing":    { "mixamo": "Typing",               "dung": "đang làm việc" },
+    "idle":      { "mixamo": "Sitting Idle",         "dung": "ngồi rảnh" },
+    "look":      { "mixamo": "Sitting Looking Side To Side", "dung": "ngồi nhìn quanh" },
+    "impatient": { "mixamo": "Sitting And Impatiently Waiting", "dung": "chờ việc" },
+    "thumbsup":  { "mixamo": "Sitting Thumbs Up",    "dung": "vừa xong việc" },
+    "disbelief": { "mixamo": "Sitting Disbelief",    "dung": "gặp lỗi" },
+    "talking":   { "mixamo": "Sitting Talking",      "dung": "nói chuyện ở lounge / quán cà phê" },
+    "beckon":    { "mixamo": "Waving Someone Over While Seated", "dung": "xin duyệt quyền" }
+  },
+  "states": {
+    "working": "typing", "workingLounge": "talking", "idle": ["idle", "look"], "idleCafe": ["talking", "idle", "look"],
+    "gaming": "typing", "queued": "impatient", "waiting": "beckon", "error": "disbelief", "offline": "idle", "done": "thumbsup"
+  },
+  "xbot": "https://raw.githubusercontent.com/mrdoob/three.js/r170/examples/models/gltf/Xbot.glb"
+}

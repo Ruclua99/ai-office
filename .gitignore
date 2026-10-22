@@ -1,0 +1,18 @@
+node_modules/
+data/
+.env
+*.log
+
+# Nhân vật & animation Mixamo: giấy phép Adobe không cho phân phối lại → mỗi người tự tải (npm run nhanvat)
+public/models/people/characters/*.glb
+public/models/people/animations/*.glb
+public/models/people/people.json
+# Model .glb tuỳ chọn thay đồ dựng bằng code
+public/models/*.glb
+public/models/manifest.json
+
+# File FBX tải từ Mixamo và file tạm của công cụ chuyển đổi
+tools/mixamo/in/**/*.fbx
+tools/mixamo/in/**/*.fbm
+tools/mixamo/.tmp/
+tools/mixamo/node_modules/

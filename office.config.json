@@ -1,0 +1,194 @@
+{
+  "departments": [
+    {
+      "id": "thiet-ke",
+      "name": "Thiết kế hình ảnh",
+      "color": "#4d6189",
+      "x": -8.6,
+      "z": -6.3,
+      "w": 8.6,
+      "d": 6.4,
+      "style": {
+        "shape": "zone",
+        "screenTheme": "design",
+        "label": "Thiết kế",
+        "seed": 11
+      }
+    },
+    {
+      "id": "chien-luoc",
+      "name": "Chiến lược · Nội dung",
+      "color": "#8a7db3",
+      "x": 8.6,
+      "z": -6.3,
+      "w": 8.6,
+      "d": 6.4,
+      "style": {
+        "shape": "zone",
+        "screenTheme": "charts",
+        "label": "Chiến lược",
+        "seed": 23
+      }
+    },
+    {
+      "id": "ky-thuat",
+      "name": "Kỹ thuật · Web",
+      "color": "#8c9b6b",
+      "x": -8.6,
+      "z": 4.9,
+      "w": 8.6,
+      "d": 6.4,
+      "style": {
+        "shape": "zone",
+        "screenTheme": "code",
+        "label": "Kỹ thuật",
+        "seed": 37
+      }
+    },
+    {
+      "id": "san-xuat-noi-dung",
+      "name": "Sản xuất nội dung",
+      "color": "#b9745a",
+      "x": 8.6,
+      "z": 4.9,
+      "w": 8.6,
+      "d": 6.4,
+      "style": {
+        "shape": "zone",
+        "screenTheme": "media",
+        "label": "Marketing",
+        "seed": 41
+      }
+    },
+    {
+      "id": "dieu-phoi",
+      "name": "Điều phối",
+      "color": "#2f3033",
+      "x": 0,
+      "z": -0.7,
+      "w": 8.4,
+      "d": 8.4,
+      "style": {
+        "shape": "lounge",
+        "screenTheme": "docs",
+        "label": "Điều phối",
+        "seed": 53
+      }
+    },
+    {
+      "id": "khach-hang",
+      "name": "Bàn khách hàng",
+      "color": "#5b5248",
+      "x": -16.1,
+      "z": -0.6,
+      "w": 3.6,
+      "d": 6.6,
+      "style": {
+        "shape": "room",
+        "screenTheme": "docs",
+        "label": "Khách hàng",
+        "seed": 67
+      }
+    },
+    {
+      "id": "san-xuat-phim",
+      "name": "Sản xuất phim",
+      "color": "#4a4f5c",
+      "x": 16.1,
+      "z": -0.6,
+      "w": 3.6,
+      "d": 6.6,
+      "style": {
+        "shape": "room",
+        "screenTheme": "video",
+        "label": "Phim",
+        "seed": 79
+      }
+    },
+    {
+      "id": "ca-phe",
+      "name": "Cà phê",
+      "color": "#5a3f2e",
+      "x": -9.4,
+      "z": 11.35,
+      "w": 11.4,
+      "d": 4.0,
+      "style": {
+        "shape": "cafe",
+        "label": "Cà phê",
+        "seed": 7
+      }
+    },
+    {
+      "id": "giai-tri",
+      "name": "Giải trí",
+      "color": "#2c2f55",
+      "x": 9.4,
+      "z": 11.35,
+      "w": 11.4,
+      "d": 4.0,
+      "style": {
+        "shape": "game",
+        "label": "Giải trí",
+        "seed": 8
+      }
+    }
+  ],
+  "agents": [
+    {
+      "id": "dieu-phoi",
+      "name": "Trưởng điều phối",
+      "role": "Nhận brief, chia việc cho các phòng, tổng hợp kết quả",
+      "departmentId": "dieu-phoi",
+      "provider": "claude-code",
+      "permissionMode": "plan",
+      "systemPrompt": "Bạn là người điều phối. Đọc brief, chia nhỏ việc và giao cho đúng phòng bằng tool assign_task. Theo dõi bằng get_task, tổng hợp lại cho quản lý. Không tự làm việc chuyên môn."
+    },
+    {
+      "id": "art-director",
+      "name": "Art director",
+      "role": "Lên ý tưởng hình ảnh, brief cho designer, duyệt concept",
+      "departmentId": "thiet-ke",
+      "provider": "claude-code",
+      "systemPrompt": "Bạn là art director của agency quảng cáo du lịch - nghỉ dưỡng. Viết brief hình ảnh rõ ràng: bố cục, màu, ánh sáng, chất liệu, tỉ lệ khung theo từng nền tảng (Naver, Kakao, Xiaohongshu, Meta).",
+      "permissionMode": "plan",
+      "model": "claude-sonnet-5-5"
+    },
+    {
+      "id": "copywriter",
+      "name": "Copywriter Hàn",
+      "role": "Viết nội dung quảng cáo Naver/Kakao tiếng Hàn",
+      "departmentId": "chien-luoc",
+      "provider": "claude-code",
+      "systemPrompt": "Viết copy quảng cáo tiếng Hàn tự nhiên cho khách du lịch Hàn Quốc đến Việt Nam. Tuân thủ giới hạn ký tự của Naver Search Ads.",
+      "permissionMode": "plan",
+      "model": "claude-sonnet-5-5"
+    },
+    {
+      "id": "copywriter-cn",
+      "name": "Copywriter Trung",
+      "role": "Viết nội dung Xiaohongshu/Douyin tiếng Trung",
+      "departmentId": "san-xuat-noi-dung",
+      "provider": "claude-code",
+      "permissionMode": "plan",
+      "model": "claude-sonnet-5-5"
+    },
+    {
+      "id": "dev-web",
+      "name": "Lập trình viên web",
+      "role": "Sửa landing page, code tool nội bộ",
+      "departmentId": "ky-thuat",
+      "provider": "claude-code",
+      "permissionMode": "default",
+      "cwd": ""
+    },
+    {
+      "id": "dev-codex",
+      "name": "Reviewer Codex",
+      "role": "Review code, viết test",
+      "departmentId": "ky-thuat",
+      "provider": "codex",
+      "permissionMode": "plan"
+    }
+  ]
+}

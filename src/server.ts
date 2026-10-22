@@ -149,6 +149,15 @@ office.on('usage', u => broadcast('usage', u));
 let changedTimer: NodeJS.Timeout | undefined;
 office.on('changed', () => { clearTimeout(changedTimer); changedTimer = setTimeout(() => broadcast('changed', null), 100); });
 
+server.on('error', (e: NodeJS.ErrnoException) => {
+  if (e.code === 'EADDRINUSE') {
+    console.error(`\nCổng ${PORT} đang được dùng: văn phòng có lẽ đã chạy sẵn ở một cửa sổ khác → mở http://localhost:${PORT}.`);
+    console.error('Muốn chạy lại từ đầu thì đóng cửa sổ kia trước. (Mã thoát 3)');
+    process.exit(3);
+  }
+  console.error('[server]', e);
+  process.exit(1);
+});
 server.listen(PORT, HOST, () => {
   console.log(`\n🏢 Văn phòng ảo: http://localhost:${PORT}`);
   const auth = process.env.ANTHROPIC_API_KEY ? 'ANTHROPIC_API_KEY trong .env (trả theo token)'

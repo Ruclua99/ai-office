@@ -22,7 +22,10 @@ function write(level: string, args: unknown[]) {
 
 for (const level of ['log', 'warn', 'error'] as const) {
   const orig = console[level].bind(console);
-  console[level] = (...args: unknown[]) => { orig(...args); write(level.toUpperCase(), args); };
+  console[level] = (...args: unknown[]) => {
+    try { orig(...args); } catch { /* ignore broken pipe */ }
+    write(level.toUpperCase(), args);
+  };
 }
 
 // Lỗi lọt ra ngoài (thường từ 1 nhân viên AI): ghi lại và giữ văn phòng chạy tiếp thay vì tắt cả server

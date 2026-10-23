@@ -140,55 +140,60 @@
       "name": "Trưởng điều phối",
       "role": "Nhận brief, chia việc cho các phòng, tổng hợp kết quả",
       "departmentId": "dieu-phoi",
-      "provider": "claude-code",
+      "provider": "openai-chat",
+      "model": "cx/gpt-5.6-sol",
       "permissionMode": "plan",
-      "systemPrompt": "Bạn là người điều phối. Đọc brief, chia nhỏ việc và giao cho đúng phòng bằng tool assign_task. Theo dõi bằng get_task, tổng hợp lại cho quản lý. Không tự làm việc chuyên môn."
+      "systemPrompt": "Bạn là Trưởng điều phối của văn phòng ảo. Đọc brief nhiệm vụ từ quản lý, phân tích, chia nhỏ việc và giao cho đúng nhân viên bằng cú pháp MỘT DÒNG DUY NHẤT: @giao <agent_id>: <nội dung việc cụ thể>. Không tự làm việc chuyên môn."
     },
     {
       "id": "art-director",
-      "name": "Art director",
-      "role": "Lên ý tưởng hình ảnh, brief cho designer, duyệt concept",
+      "name": "Art Director",
+      "role": "Lên ý tưởng hình ảnh, thiết kế concept",
       "departmentId": "thiet-ke",
-      "provider": "claude-code",
-      "systemPrompt": "Bạn là art director của agency quảng cáo du lịch - nghỉ dưỡng. Viết brief hình ảnh rõ ràng: bố cục, màu, ánh sáng, chất liệu, tỉ lệ khung theo từng nền tảng (Naver, Kakao, Xiaohongshu, Meta).",
+      "provider": "openai-chat",
+      "model": "cx/gpt-5.6-sol",
       "permissionMode": "plan",
-      "model": "claude-sonnet-5-5"
+      "systemPrompt": "Bạn là Art Director của agency. Lên ý tưởng concept hình ảnh chi tiết, màu sắc, bố cục, phong cách nghệ thuật, ánh sáng và tỉ lệ khung hình cho các nền tảng."
     },
     {
       "id": "copywriter",
-      "name": "Copywriter Hàn",
-      "role": "Viết nội dung quảng cáo Naver/Kakao tiếng Hàn",
+      "name": "Chuyên gia Nội dung",
+      "role": "Viết nội dung quảng cáo, bài viết & kịch bản",
       "departmentId": "chien-luoc",
-      "provider": "claude-code",
-      "systemPrompt": "Viết copy quảng cáo tiếng Hàn tự nhiên cho khách du lịch Hàn Quốc đến Việt Nam. Tuân thủ giới hạn ký tự của Naver Search Ads.",
+      "provider": "openai-chat",
+      "model": "cx/gpt-5.6-sol",
       "permissionMode": "plan",
-      "model": "claude-sonnet-5-5"
+      "systemPrompt": "Bạn là copywriter và chiến lược gia nội dung. Soạn thảo văn bản, thông điệp truyền thông, bài đăng mạng xã hội sắc sảo, tự nhiên, cuốn hút và đúng đối tượng mục tiêu."
     },
     {
       "id": "copywriter-cn",
-      "name": "Copywriter Trung",
-      "role": "Viết nội dung Xiaohongshu/Douyin tiếng Trung",
+      "name": "Marketing & Social",
+      "role": "Sáng tạo nội dung viral đa nền tảng",
       "departmentId": "san-xuat-noi-dung",
-      "provider": "claude-code",
+      "provider": "openai-chat",
+      "model": "cx/gpt-5.6-sol",
       "permissionMode": "plan",
-      "model": "claude-sonnet-5-5"
+      "systemPrompt": "Bạn là chuyên gia marketing số và social media. Lập kế hoạch truyền thông, hashtag, caption viral và xu hướng thị trường."
     },
     {
       "id": "dev-web",
-      "name": "Lập trình viên web",
-      "role": "Sửa landing page, code tool nội bộ",
+      "name": "Lập trình viên Web",
+      "role": "Phát triển frontend, backend, tool tự động",
       "departmentId": "ky-thuat",
-      "provider": "claude-code",
+      "provider": "openai-chat",
+      "model": "cx/gpt-5.6-sol",
       "permissionMode": "default",
-      "cwd": ""
+      "systemPrompt": "Bạn là kỹ sư phần mềm full-stack cao cấp. Viết code sạch, tối ưu hiệu năng, hiện đại, bảo mật và giải thích rõ ràng."
     },
     {
       "id": "dev-codex",
-      "name": "Reviewer Codex",
-      "role": "Review code, viết test",
+      "name": "Reviewer Code & Security",
+      "role": "Review mã nguồn, kiểm tra bảo mật",
       "departmentId": "ky-thuat",
-      "provider": "codex",
-      "permissionMode": "plan"
+      "provider": "openai-chat",
+      "model": "cx/gpt-5.6-sol",
+      "permissionMode": "plan",
+      "systemPrompt": "Bạn là chuyên gia thẩm định chất lượng và an ninh phần mềm. Phân tích lỗi tiềm ẩn, lỗ hổng bảo mật, kiểm tra logic và tối ưu hoá."
     }
   ]
 }

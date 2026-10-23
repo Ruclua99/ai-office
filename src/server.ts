@@ -43,8 +43,8 @@ const app = express();
 app.use(express.json({ limit: '2mb' }));
 
 const hostGuard = (req: Request, res: Response, next: NextFunction) => {
-  if (!ALLOWED_HOSTS.has(req.headers.host ?? '')) return res.status(403).send('Host không được phép');
-  next();
+  if (ALLOWED_HOSTS.has('*') || ALLOWED_HOSTS.has(req.headers.host ?? '')) return next();
+  return res.status(403).send('Host không được phép');
 };
 app.use(hostGuard);
 
@@ -130,7 +130,7 @@ const server = createServer(app);
 const wss = new WebSocketServer({ noServer: true });
 server.on('upgrade', (req, socket, head) => {
   const url = new URL(req.url ?? '/', 'http://x');
-  if (url.pathname !== '/ws' || url.searchParams.get('token') !== TOKEN || !ALLOWED_HOSTS.has(req.headers.host ?? '')) {
+  if (url.pathname !== '/ws' || url.searchParams.get('token') !== TOKEN || (!ALLOWED_HOSTS.has('*') && !ALLOWED_HOSTS.has(req.headers.host ?? ''))) {
     socket.destroy();
     return;
   }

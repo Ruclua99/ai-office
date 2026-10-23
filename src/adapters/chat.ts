@@ -58,40 +58,91 @@ export const anthropicChatAdapter: AgentAdapter = {
   },
 };
 
-/** OpenAI Responses API — ngữ cảnh nối tiếp bằng previous_response_id (lưu vào sessionId) */
+/** OpenAI API — hỗ trợ chuẩn chat.completions (9router, OpenAI, Ollama) và fallback responses API */
 export const openaiChatAdapter: AgentAdapter = {
   async run(agent, prompt, ctx) {
     if (!process.env.OPENAI_API_KEY) {
       throw new Error('Nhân viên loại "OpenAI chat (API)" cần OPENAI_API_KEY trong .env. Không có API key thì đổi sang loại "OpenAI Codex" (dùng tài khoản ChatGPT đã đăng nhập trong Codex).');
     }
-    openai ??= new OpenAI(); // đọc OPENAI_API_KEY
+    openai ??= new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+      baseURL: process.env.OPENAI_BASE_URL || undefined,
+    });
     const atts = ctx.task.attachments ?? [];
     if (atts.some(a => !sendable(a))) ctx.emit('system', unsentNote(atts).trim());
-    const input: any = atts.length
-      ? [{
-          role: 'user',
-          content: [
-            { type: 'input_text', text: prompt + attachmentNote(atts, { canReadFiles: false, inlined: sendable }) + textBlocks(atts) + unsentNote(atts) },
-            ...atts.filter(inlineImage).map(a => ({ type: 'input_image', detail: 'auto', image_url: `data:${a.mime};base64,${b64(a)}` })),
-            ...atts.filter(a => isPdf(a) && sendable(a)).map(a => ({ type: 'input_file', filename: a.name, file_data: `data:application/pdf;base64,${b64(a)}` })),
-          ],
-        }]
-      : prompt;
-    const res = await openai.responses.create({
-      model: agent.model || process.env.DEFAULT_OPENAI_MODEL || 'gpt-5',
-      instructions: officeBrief(agent, ctx.office, false),
-      input,
-      previous_response_id: agent.sessionId || undefined,
-      store: true,
-    }, { signal: ctx.signal });
 
-    ctx.setSessionId(res.id);
-    const ou: any = res.usage ?? {};
-    const cached = ou.input_tokens_details?.cached_tokens ?? 0;
-    ctx.recordUsage(estimate({ model: res.model, input: Math.max(0, (ou.input_tokens ?? 0) - cached), output: ou.output_tokens ?? 0, cacheRead: cached, cacheWrite: 0 }));
-    const text = res.output_text ?? '';
+    const history = repo.chatHistory(agent.id).map(m => ({
+      role: m.role as 'user' | 'assistant',
+      content: m.content.length > 6000 ? m.content.slice(0, 6000) + '\n…(đã cắt bớt)' : m.content
+    }));
+    const userText = prompt + attachmentNote(atts, { canReadFiles: false, inlined: sendable }) + textBlocks(atts) + unsentNote(atts);
+    const messages: any[] = [
+      { role: 'system', content: officeBrief(agent, ctx.office, false) },
+      ...history,
+      {
+        role: 'user',
+        content: atts.filter(inlineImage).length > 0
+          ? [
+              { type: 'text', text: userText },
+              ...atts.filter(inlineImage).map(a => ({
+                type: 'image_url',
+                image_url: { url: `data:${a.mime};base64,${b64(a)}` }
+              }))
+            ]
+          : userText
+      }
+    ];
+
+    let text = '';
+    let inTok = 0, outTok = 0;
+    const modelToUse = agent.model || process.env.DEFAULT_OPENAI_MODEL || 'cx/gpt-6.1-sol';
+
+    try {
+      const res = await openai.chat.completions.create({
+        model: modelToUse,
+        messages,
+      }, { signal: ctx.signal });
+
+      text = res.choices[0]?.message?.content || '';
+      inTok = res.usage?.prompt_tokens ?? 0;
+      outTok = res.usage?.completion_tokens ?? 0;
+    } catch (chatErr: any) {
+      // Fallback responses API nếu server yêu cầu
+      if (openai.responses && typeof (openai.responses as any).create === 'function') {
+        const input: any = atts.length
+          ? [{
+              role: 'user',
+              content: [
+                { type: 'input_text', text: userText },
+                ...atts.filter(inlineImage).map(a => ({ type: 'input_image', detail: 'auto', image_url: `data:${a.mime};base64,${b64(a)}` })),
+                ...atts.filter(a => isPdf(a) && sendable(a)).map(a => ({ type: 'input_file', filename: a.name, file_data: `data:application/pdf;base64,${b64(a)}` })),
+              ],
+            }]
+          : prompt;
+        const res = await openai.responses.create({
+          model: modelToUse,
+          instructions: officeBrief(agent, ctx.office, false),
+          input,
+          previous_response_id: agent.sessionId || undefined,
+          store: true,
+        }, { signal: ctx.signal });
+
+        ctx.setSessionId(res.id);
+        const ou: any = res.usage ?? {};
+        const cached = ou.input_tokens_details?.cached_tokens ?? 0;
+        inTok = Math.max(0, (ou.input_tokens ?? 0) - cached);
+        outTok = ou.output_tokens ?? 0;
+        text = res.output_text ?? '';
+      } else {
+        throw chatErr;
+      }
+    }
+
+    ctx.recordUsage(estimate({ model: modelToUse, input: inTok, output: outTok, cacheRead: 0, cacheWrite: 0 }));
+    repo.addChat(agent.id, 'user', atts.length ? `${prompt}\n[Đã đính kèm: ${atts.map(a => a.name).join(', ')}]` : prompt);
+    repo.addChat(agent.id, 'assistant', text);
     ctx.emit('message', text);
-    ctx.emit('result', `Xong · ${res.usage?.input_tokens ?? 0} in / ${res.usage?.output_tokens ?? 0} out tokens`, { usage: res.usage });
+    ctx.emit('result', `Xong · ${inTok} in / ${outTok} out tokens`, { usage: { input_tokens: inTok, output_tokens: outTok } });
     applyTextDelegations(agent, text, ctx);
     return text;
   },
